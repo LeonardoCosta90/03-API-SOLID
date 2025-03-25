@@ -1,6 +1,13 @@
 import { defineConfig } from 'vite'
-import tsconfigPaths from 'vite-tsconfig-paths'
+import { resolve } from 'path'
 
 export default defineConfig({
-  plugins: [tsconfigPaths()],
+  test: {
+    globals: true,
+    environment: 'node',
+    setupFiles: './src/test/prisma-environment.ts',
+    alias: {
+      '@': resolve(__dirname, './src'),
+    },
+  },
 })
