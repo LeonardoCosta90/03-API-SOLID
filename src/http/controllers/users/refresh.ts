@@ -1,15 +1,15 @@
 import { FastifyReply, FastifyRequest } from 'fastify'
 
 export async function refresh(request: FastifyRequest, reply: FastifyReply) {
-  const { role } = request.user
-
   await request.jwtVerify({ onlyCookie: true })
+
+  const { role, sub } = request.user
 
   const token = await reply.jwtSign(
     { role },
     {
       sign: {
-        sub: request.user.sub,
+        sub,
       },
     },
   )
@@ -18,7 +18,7 @@ export async function refresh(request: FastifyRequest, reply: FastifyReply) {
     { role },
     {
       sign: {
-        sub: request.user.sub,
+        sub,
         expiresIn: '7d',
       },
     },
@@ -32,7 +32,5 @@ export async function refresh(request: FastifyRequest, reply: FastifyReply) {
       httpOnly: true,
     })
     .status(200)
-    .send({
-      token,
-    })
+    .send({ token })
 }
